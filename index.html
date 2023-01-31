@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Senior Design</title>
+</head>
+
+<script>
+    function saveConfig() {
+        const value = document.getElementById('locationInput').value;
+        fetch('/save-config', {
+            method: 'POST',
+            body: JSON.stringify({
+                location: value,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(res => console.log(res));
+    }
+</script>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+        <input id="locationInput" type="text" placeholder="Location" />
+        <button onclick="saveConfig()">Save</button>
+    </div>
+</body>
+
+</html>
