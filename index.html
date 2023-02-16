@@ -6,8 +6,31 @@
 </head>
 
 <script>
+    const locationList = [
+        'ashville',
+        'toledo',
+        'perrysburg',
+        'maumee',
+    ]
+
     function saveConfig() {
-        const value = document.getElementById('locationInput').value;
+        let input = document.getElementById('locationInput');
+        let errorText = document.getElementById('errorText');
+        const value = input.value;
+
+        if (!locationList.includes(value)) {
+            input.classList.add('error');
+            errorText.classList.remove('hidden');
+            errorText.classList.add('visible');
+
+            console.log('bad location');
+            return;
+        } else {
+            input.classList.remove('error');
+            errorText.classList.add('hidden');
+            errorText.classList.remove('visible');
+        }
+
         fetch('/save-config', {
             method: 'POST',
             body: JSON.stringify({
@@ -20,11 +43,27 @@
     }
 </script>
 
+<style>
+    .error {
+        border: 1px solid red;
+    }
+
+    .visible {
+        display: block;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
-        <input id="locationInput" type="text" placeholder="Location" />
-        <button onclick="saveConfig()">Save</button>
+        <h1>Location Cloaking Configuration</h1>
+        <span>Desired location: <input id="locationInput" type="text" placeholder="Location" /><button
+                onclick="saveConfig()">Save</button></span>
+        <div id="errorText" style="color:red;" class="hidden">Invalid location</div>
     </div>
 </body>
 
