@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 
-const API_KEY = 'AIzaSyARu3bHhF3nZ4MKb-3NUOsXcKn460Y4n8M';
+const API_KEY = '';
 
 function findPlace(place) {
     const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${place}&inputtype=textquery&key=${API_KEY}`;
