@@ -1,9 +1,17 @@
 import requests
 import time
 import coordinate
+import os
 
 
 def create_network_list(x, y, radius, list_name):
+    # Check if the list already exists
+    if os.path.exists("lists/{}.txt".format(list_name)):
+        use_existing = input(
+            'List ' + list_name + ' already exists. Use the existing list? (Default: yes): ') or "yes"
+        if use_existing == "yes":
+            return
+
     # Establish search area
     search_area = coordinate.SearchArea(x, y, radius)
 
@@ -53,7 +61,7 @@ def create_network_list(x, y, radius, list_name):
             # Break if searchAfter is null or empty string
             if not searchAfter:
                 break
-            time.sleep(0.5)
+            time.sleep(0.25)
             queries += 1
         except KeyError as error:
             print("Finished")

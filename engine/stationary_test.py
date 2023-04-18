@@ -13,11 +13,11 @@ import subprocess
 import time
 
 coordinates = input(
-    "Please enter a start location (Ex: 41.658048, -83.614218): ")
+    "Please enter a start location (Default: 41.658048, -83.614218): ") or "41.658048, -83.614218"
 radius = input(
-    "Please enter an acceptable search radius in feet (default is 1000): ")
+    "Please enter an acceptable search radius in feet (Default: 1000): ") or 1000
 network_list_name = input(
-    "Please enter a name for the network list. Do not include a file extension. (Ex: Toledo): ")
+    "Please enter a name for the network list. Do not include a file extension. (Default: ut): ") or "ut"
 
 latitude, longitude = coordinates.split(',')
 latitude = float(latitude)
