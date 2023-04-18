@@ -26,6 +26,8 @@ longitude = float(longitude)
 # Turn off the VPN, if it is on
 connect.stop_vpn()
 
+time.sleep(0.5)
+
 # Turn on the VPN
 connect.start_vpn()
 

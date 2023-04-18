@@ -61,7 +61,7 @@ def create_network_list(x, y, radius, list_name):
             # Break if searchAfter is null or empty string
             if not searchAfter:
                 break
-            time.sleep(0.25)
+            time.sleep(0.1)
             queries += 1
         except KeyError as error:
             print("Finished")
