@@ -50,6 +50,10 @@ print("Waiting for first prompt...")
 
 time.sleep(1)
 
+# Check to see if any conflicting processes need to be killed before starting the WiFi Spam Script
+output = subprocess.check_output(["sudo", "airmon-ng", "check", "kill"])
+print(output.decode("utf-8")[0:-1])
+
 # Send the parameter to the script
 print("Sent response to first prompt...")
 p.stdin.write(b'wlan1\n')
