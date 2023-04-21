@@ -41,6 +41,22 @@
             },
         }).then(res => console.log(res));
     }
+
+    function showSingle() {
+        document.getElementById('single').classList.add('visible');
+        document.getElementById('single').classList.remove('hidden');
+
+        document.getElementById('route').classList.add('hidden');
+        document.getElementById('route').classList.add('visible');
+    }
+
+    function showRoute() {
+        document.getElementById('route').classList.add('visible');
+        document.getElementById('route').classList.remove('hidden');
+
+        document.getElementById('single').classList.add('hidden');
+        document.getElementById('single').classList.add('visible');
+    }
 </script>
 
 <style>
@@ -61,9 +77,37 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
         <h1>Location Cloaking Configuration</h1>
-        <span>Desired location: <input id="locationInput" type="text" placeholder="Location" /><button
-                onclick="saveConfig()">Save</button></span>
-        <div id="errorText" style="color:red;" class="hidden">Invalid location</div>
+        <input type="radio" id="html" name="fav_language" value="HTML" onclick="showSingle()">
+        <label for="html">Single Network</label><br>
+        <input type="radio" id="css" name="fav_language" value="CSS" onclick="showRoute()">
+        <label for="css">Route</label><br>
+        <div id="single" class="hidden">
+            <span>Desired location: <input id="locationInput" type="text" placeholder="Location" /></span>
+            <div id="errorText" style="color:red;" class="hidden">Invalid location</div>
+            <select>
+                <option>WiGLE API Result 1</option>
+                <option>WiGLE API Result 2</option>
+                <option>WiGLE API Result 3</option>
+                <option>WiGLE API Result 4</option>
+            </select>
+            <button onclick="saveConfig()">Save</button>
+        </div>
+        <div id="route" class="hidden">
+            <span>From: <input id="fromInput" type="text" placeholder="Location" /></span>
+            <span>To: <input id="toInput" type="text" placeholder="Location" /></span>
+            <hr>
+
+            <h3>Route option 1</h3>
+            <div>Route details</div>
+            <hr>
+
+            <h3>Route option 2</h3>
+            <div>Route details</div>
+            <hr>
+
+            <h3>Route option 3</h3>
+            <div>Route details</div>
+        </div>
     </div>
 </body>
 

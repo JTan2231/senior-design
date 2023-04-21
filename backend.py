@@ -13,18 +13,19 @@ class ChangeHandler(FileSystemEventHandler):
         super().__init__()
 
     def on_modified(self, event):
-        global PROPAGATING
-        global CONFIG
+        if event.is_directory:
+            global PROPAGATING
+            global CONFIG
 
-        PROPAGATING = False
-        try:
-            with open('config.json', 'r') as f:
-                CONFIG = json.load(f)
-                print(CONFIG)
-        except json.decoder.JSONDecodeError:
-            print('error reading ./config.JSON')
+            PROPAGATING = False
+            try:
+                with open('config.json', 'r') as f:
+                    CONFIG = json.load(f)
+                    print(CONFIG)
+            except json.decoder.JSONDecodeError:
+                print('error reading ./config.JSON')
 
-        # reload the propagation with the updated CONFIG
+            # reload the propagation with the updated CONFIG
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
