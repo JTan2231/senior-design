@@ -68,7 +68,7 @@ time.sleep(1)
 
 # Send the parameter to the script
 print("Sent response to first prompt...")
-p.stdin.write(b'wlan1\n')
+p.stdin.write(b'wlan1mon\n')
 p.stdin.flush()
 
 # Wait for the script to print out a prompt
