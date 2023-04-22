@@ -26,15 +26,16 @@ longitude = float(longitude)
 # Setup the monitor network interface on wlan1mon
 output = subprocess.check_output(["ifconfig"]).decode("utf-8")[0:-1]
 if 'wlan1mon' in output:
-    print("wlan1mon is already configured, skipping configuration.")
+    print("\nwlan1mon is already configured, skipping configuration.")
 else:
+    print("Configuring wlan1mon...")
     # Check to see if any conflicting processes need to be killed before starting the WiFi Spam Script
     output = subprocess.check_output(["sudo", "airmon-ng", "check", "kill"])
     output = subprocess.check_output(["sudo", "airmon-ng", "start", "wlan1"])
 
     output = subprocess.check_output(["ifconfig"]).decode("utf-8")[0:-1]
     if "wlan1mon" in output:
-        print("wlan1mon successfully configured.")
+        print("\nwlan1mon successfully configured.\n")
         output = subprocess.check_output(
             ["sudo", "service", "NetworkManager", "start"])
 
