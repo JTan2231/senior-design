@@ -21,7 +21,24 @@ def get_vpn_ip():
 
 
 def stop_vpn():
+    print("Disconnecting from VPN...", end="", flush=True)
+    state = get_connection_state()
     output = subprocess.check_output(["piactl", "disconnect"])
+    while state != "Disconnected":
+        try:
+            output = subprocess.check_output(["piactl", "disconnect"])
+
+            while state != "Disconnected":
+                if state == "Connected" or state == "Disconnecting":
+                    print(".", end="", flush=True)
+                else:
+                    print(state)
+                time.sleep(0.5)
+                state = get_connection_state()
+
+        except Exception as e:
+            print("Error disconnecting from VPN. Trying again.")
+    print("Done.\n")
     return output.decode("utf-8")[0:-1]
 
 
@@ -38,17 +55,31 @@ def start_vpn():
         ["piactl", "connect"]
     ]
 
-    for command in commands:
-        output = subprocess.check_output(command)
-        output = output.decode("utf-8")[0:-1]
-        if output != "":
-            print(output)
 
     # Check connection state
-    print(get_connection_state())
-    while get_connection_state() != "Connected":
-        print(get_connection_state())
-        time.sleep(2)
+    isConnected = False
+    while (isConnected == False):
+        try:
+            for command in commands:
+                output = subprocess.check_output(command)
+                output = output.decode("utf-8")[0:-1]
+                if output != "":
+                    print(output)
+
+            state = get_connection_state()
+            print("Connecting to VPN...", end="", flush=True)
+            while state != "Connected" and state != "Connected\n":
+                if state == "Disconnected" or state == "Connecting":
+                    print(".", end="", flush=True)
+                else:
+                    print(state)
+                time.sleep(0.5)
+                state = get_connection_state()
+            isConnected = True
+        except Exception as e:
+            print("Error connecting to VPN. Trying again.")
+
+    print("Done.")
 
     # get server location
     connected_server = get_server_location()

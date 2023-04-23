@@ -49,6 +49,8 @@ def create_network_list(x, y, radius, list_name):
             break
         elif (response.status_code == 200):
             print(".", end="", flush=True),
+        else:
+            print(response.status_code)
         data = response.json()
 
         # Append SSID names to ssid_list
