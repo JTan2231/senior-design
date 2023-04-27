@@ -7,12 +7,14 @@
 # 3. Beigin broadcasting the Wi-Fi networks.
 # 4. (optional) show iPhone's connection status to the Pi.
 
+import csv
+import select
+import sys
 import network_scan
 import connect as connect
 import subprocess
 import time
 import os
-from threading import Thread
 
 network_list_name = input(
     "Please enter a name for the network list. Do not include a file extension. (Default: ut): ") or "ut"
@@ -33,7 +35,7 @@ else:
         output = subprocess.check_output(
             ["sudo", "service", "NetworkManager", "start"])
 
-# Scan for WiFi networks for 15 seconds
+# Scan for WiFi networks for 15 seconds or so
 # Condense network data into a csv with SSID and MAC pairs
 network_scan.capture(network_list_name)
 
@@ -46,24 +48,24 @@ network_scan.capture(network_list_name)
 # Propagation function
 
 
-def propagation(channel, mac_address, ssid):
+def propagate(channel, mac_address, ssid):
     # Set the channel
     os.system("sudo iw wlan1mon set channel {}".format(channel))
+    # Go down to change the MAC
+    os.system("sudo ifconfig wlan1mon down")
     # Set the MAC address
     os.system("sudo macchanger -m {} wlan1mon".format(mac_address))
+    # Go back up
+    os.system("sudo ifconfig wlan1mon up")
     # Begin propagation
-    os.system("sudo mkd3 wlan1mon b -n {} -a -m -s 10".format(ssid))
+    os.system("sudo mdk3 wlan1mon b -n {} -a -m -s 10".format(ssid))
 
+    #! Issue: the script does not proceed past this point. It is stuck, single threadedly waiting for the previous command to complete
+    #! The previous command will not complete unless CTRL + C is forcibly used, or unless a thread is spawned.
 
-# Iterate over each network detected
-for item in network_list_name:
-    channel = item['channel']
-    mac_address = item['mac_address']
-    ssid = item['ssid']
-
-    # Spawn a thread for the given network
-    t = Thread(target=propagation, args=(channel, mac_address, ssid))
-    t.start()
+    # Propagation using a list and a single script is working. The only thing I changed is maybe -m and increasing the rate to 150pps
+    # Also, should refactor how list construction works. When the original list is made, a second list should be made in order of
+    # frequency of each SSID. Then, the top x number of SSIDs are kept (5-10).
 
 
 # Turn off the VPN, if it is on
@@ -73,3 +75,24 @@ time.sleep(0.5)
 
 # Turn on the VPN
 connect.start_vpn()
+
+# Open CSV file
+with open("engine/lists/{}.csv".format(network_list_name), 'r') as csvfile:
+    reader = csv.DictReader(csvfile)
+
+    # Iterate over each network detected
+    while True:
+        # check if there is any input available
+        if select.select([sys.stdin], [], [], 0)[0]:
+            # if there is input available, exit the loop
+            break
+        for line in csvfile:
+            line = line.strip("\n").split(",")
+            ssid = line[0]
+            mac_address = line[1]
+            channel = line[2]
+
+            # Spawn a thread for the given network
+            propagate(channel, mac_address, ssid)
+            time.sleep(2)
+            # Stop propagation
