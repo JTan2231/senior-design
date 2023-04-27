@@ -84,7 +84,24 @@ if [ $DD == 1 ]; then
 	iwconfig $AD mode monitor
 	ifconfig $AD up
 	trap coolexit EXIT
+	# $AD is the active wifi interface
+	# b sends "beacon" frames to display fake access points
+	# Normal access points send 10 beacon frames per second
+	# -f uses names of access points from a file
+	# -a sets the "network" to use AES WPA encryption
+	# -s sets the beacon send rate (packets per second)
+	# https://kalitut.com/mdk3-examples-tutorial/
 	mdk3 $AD b -f ./SSID_List.txt -a -s 1000
+	# Improvements to this scripts:
+	# Save the SSID names to a JSON file and not a text file.
+	# Other attributes would include channel, MAC, and signal strength.
+	# (Only MAC will be used, but it would be good to have everything else)
+	# Could run multiple instances of mdk3, with each instance handling a single SSID & MAC
+	# use -a <ap_mac> to set a custom MAC
+	# Could have a "capture" mode where the device sits and captures SSIDs and MACs. Eliminates the need for WiGLE
+	# This could appear more seamless to the target device.
+	# Can scan using `nmcli dev wifi` and distill the output to a JSON file.
+	# https://askubuntu.com/questions/567006/how-can-i-display-the-list-of-available-wi-fi-networks
 fi
 if [ $DD == 2 ]; then
 	nmcli device disconnect $AD > /dev/null 2>&1

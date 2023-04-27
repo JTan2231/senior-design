@@ -26,7 +26,7 @@ longitude = float(longitude)
 # Setup the monitor network interface on wlan1mon
 output = subprocess.check_output(["ifconfig"]).decode("utf-8")[0:-1]
 if 'wlan1mon' in output:
-    print("\nwlan1mon is already configured, skipping configuration.")
+    print("\nwlan1mon is already configured, skipping configuration.\n")
 else:
     print("Configuring wlan1mon...")
     # Check to see if any conflicting processes need to be killed before starting the WiFi Spam Script
