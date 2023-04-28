@@ -6,11 +6,8 @@ import os
 
 def create_network_list(x, y, radius, list_name):
     # Check if the list already exists
-    if os.path.exists("lists/{}.txt".format(list_name)):
-        use_existing = input(
-            'List ' + list_name + ' already exists. Use the existing list? (Default: yes): ') or "yes"
-        if use_existing == "yes":
-            return
+    if os.path.exists("engine/lists/{}.txt".format(list_name)):
+        return
 
     # Establish search area
     search_area = coordinate.SearchArea(x, y, radius)
@@ -71,7 +68,7 @@ def create_network_list(x, y, radius, list_name):
             break
 
     ssid_list = list(dict.fromkeys(ssid_list))
-    with open('lists/{}.txt'.format(list_name), 'w') as f:
+    with open('engine/lists/{}.txt'.format(list_name), 'w') as f:
         ssid_list = list(dict.fromkeys(ssid_list))
         for entry in ssid_list:
             if entry == None:

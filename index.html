@@ -6,30 +6,15 @@
 </head>
 
 <script>
-    const locationList = [
-        'ashville',
-        'toledo',
-        'perrysburg',
-        'maumee',
-    ]
-
     function saveConfig() {
         let input = document.getElementById('locationInput');
         let errorText = document.getElementById('errorText');
         const value = input.value;
 
-        if (!locationList.includes(value)) {
-            input.classList.add('error');
-            errorText.classList.remove('hidden');
-            errorText.classList.add('visible');
 
-            console.log('bad location');
-            return;
-        } else {
-            input.classList.remove('error');
-            errorText.classList.add('hidden');
-            errorText.classList.remove('visible');
-        }
+        input.classList.remove('error');
+        errorText.classList.add('hidden');
+        errorText.classList.remove('visible');
 
         fetch('/save-config', {
             method: 'POST',
@@ -84,13 +69,7 @@
         <div id="single" class="hidden">
             <span>Desired location: <input id="locationInput" type="text" placeholder="Location" /></span>
             <div id="errorText" style="color:red;" class="hidden">Invalid location</div>
-            <select>
-                <option>WiGLE API Result 1</option>
-                <option>WiGLE API Result 2</option>
-                <option>WiGLE API Result 3</option>
-                <option>WiGLE API Result 4</option>
-            </select>
-            <button onclick="saveConfig()">Save</button>
+            <button onclick="saveConfig()">Run</button>
         </div>
         <div id="route" class="hidden">
             <span>From: <input id="fromInput" type="text" placeholder="Location" /></span>

@@ -1,7 +1,8 @@
 const http = require('http');
+const { spawn } = require('node:child_process');
 const fs = require('fs');
 
-const API_KEY = '';
+const API_KEY = 'AIzaSyCyJ9L9hv_VvDEWYmOkRfmxEeZgwYUauWI';
 
 function findPlace(place) {
     const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${place}&inputtype=textquery&key=${API_KEY}`;
@@ -10,6 +11,7 @@ function findPlace(place) {
         method: 'GET',
         headers: {},
     }).then(res => res.json()).then(res => {
+        console.log(`findPlace(${place}): `, res);
         getPlaceDetails(res.candidates[0].place_id);
     });
 }
@@ -21,20 +23,24 @@ function getPlaceDetails(placeID) {
         method: 'GET',
         headers: {},
     }).then(res => res.json()).then(res => {
-        console.log(res.result.geometry.location);
-        getGeocoding(encodeURIComponent(res.result.formatted_address))
+        const location = res.result.geometry.location;
+        const demo = spawn('python', ['engine/demo.py', location.lat.toString(), location.lng.toString()]);
+        demo.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+
+        demo.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+
+            const run = spawn('python', ['engine/run.py'])
+
+            run.stdout.on('data', (data) => console.log(`stdout: ${data}`));
+
+            run.on('close', (code2) => {
+                console.log(`child process exited with code ${code2}`);
+            })
+        });
     });
-}
-
-function getGeocoding(address) {
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY}`;
-
-    console.log(url);
-
-    fetch(url, {
-        method: 'GET',
-        headers: {},
-    }).then(res => res.json()).then(res => console.log(res));
 }
 
 http.createServer(function(request, response) {
