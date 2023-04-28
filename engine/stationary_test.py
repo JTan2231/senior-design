@@ -12,6 +12,7 @@ import wigle as wigle
 import connect as connect
 import subprocess
 import time
+import network_scan
 
 coordinates = input(
     "Please enter a start location (Default: 41.658048, -83.614218): ") or "41.658048, -83.614218"
@@ -51,8 +52,9 @@ connect.start_vpn()
 
 # Gather Wi-Fi networks
 wigle.create_network_list(latitude, longitude, radius, network_list_name)
+# network_scan.scan(network_list_name)
 
 # Call Wi-Fi propagation script on this list.
 # Begin propagation
 os.system(
-    "sudo mdk3 wlan1mon b -n -f lists/{}.txt -a -m -s 10".format(network_list_name))
+    "sudo mdk3 wlan1mon b -n -f lists/{}.txt -a -m -s 150".format(network_list_name))

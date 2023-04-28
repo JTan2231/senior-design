@@ -2,7 +2,7 @@ import subprocess
 import csv
 
 
-def propagate(filename):
+def scan(filename):
     # Scan for WiFi networks
     proc = subprocess.Popen('sudo iwlist wlan0 scan',
                             stdout=subprocess.PIPE, shell=True)
@@ -28,7 +28,7 @@ def propagate(filename):
         #     channel_list.append(line.split(':')[1].strip('"').strip(","))
 
     # Open CSV file and save results
-    with open('engine/lists/{}.txt'.format(filename), 'w') as outfile:
+    with open('lists/{}.txt'.format(filename), 'w') as outfile:
         writer = csv.writer(outfile)
         for ssid in ssid_list:
             writer.writerow([ssid])
