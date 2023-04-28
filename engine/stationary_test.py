@@ -7,10 +7,12 @@
 # 3. Beigin broadcasting the Wi-Fi networks.
 # 4. (optional) show iPhone's connection status to the Pi.
 
+import os
 import wigle as wigle
 import connect as connect
 import subprocess
 import time
+import network_scan
 
 coordinates = input(
     "Please enter a start location (Default: 41.658048, -83.614218): ") or "41.658048, -83.614218"
@@ -50,50 +52,9 @@ connect.start_vpn()
 
 # Gather Wi-Fi networks
 wigle.create_network_list(latitude, longitude, radius, network_list_name)
+# network_scan.scan(network_list_name)
 
 # Call Wi-Fi propagation script on this list.
-
-# Start script
-p = subprocess.Popen('sudo ./WiFiSpam.sh', shell=True,
-                     stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-# output = subprocess.run(["sh", "WiFiSpam.sh"])
-# print(output.decode("utf-8")[0:-1])
-
-# Wait for the script to print out a prompt
-print("Waiting for first prompt...")
-# output = p.stdout.readline().decode('utf-8')
-# while 'Type your wireless interface >' not in output:
-#    output = p.stdout.readline().decode('utf-8')
-
-time.sleep(1)
-
-# Send the parameter to the script
-print("Sent response to first prompt...")
-p.stdin.write(b'wlan1mon\n')
-p.stdin.flush()
-
-# Wait for the script to print out a prompt
-print("Waiting for second prompt...")
-output = p.stdout.readline().decode('utf-8')
-while 'Choose an option:' not in output:
-    output = p.stdout.readline().decode('utf-8')
-
-# Send the parameter to the script
-print("Sent response to second prompt...")
-p.stdin.write(b'3\n')
-p.stdin.flush()
-
-# Wait for the script to print out a prompt
-print("Waiting for third prompt...")
-# output = p.stdout.readline().decode('utf-8')
-# while 'Type the name of your own word list >' not in output:
-#    output = p.stdout.readline().decode('utf-8')
-
-# Send the parameter to the script
-print("Sent response to third prompt...")
-list_path = "lists/{}.txt\n".format(network_list_name)
-p.stdin.write(list_path.encode("utf-8"))
-p.stdin.flush()
-
-# Wait for the script to finish
-p.wait()
+# Begin propagation
+os.system(
+    "sudo mdk3 wlan1mon b -n -f lists/{}.txt -a -m -s 150".format(network_list_name))
